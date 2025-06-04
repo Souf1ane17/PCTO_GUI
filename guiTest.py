@@ -1,6 +1,8 @@
 import customtkinter
-#from PIL import Image
+from PIL import Image
 import cv2
+
+from PIL import ImageOps  
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
@@ -130,16 +132,39 @@ class App(customtkinter.CTk):
         results_tabs.add("Charts")
         self.pages["results"] = results_tabs
 
-        # ------ IMAGES --------
+        # ------ IMAGES & UPTADING IMAGES --------
 
-        img_path = "C:/Users/soufi/OneDrive/Desktop/PCTO/PCTO_GUI/img1.jpg"
+        self.image1_path = "img1.jpeg"
+        pil_image = Image.open(self.image1_path)
+        self.image1 = customtkinter.CTkImage(light_image=pil_image, dark_image=pil_image, size=(500, 500))
+        self.image1_label = customtkinter.CTkLabel(images_tab, image=self.image1, text = "")
+        self.image1_label.grid(row=0, column=0, padx=20, pady=10, sticky="ew")
 
-        #pil_image = Image.open(img_path)
-        open_image = cv2.imread(img_path)
+        self.rotation_angle = 0
+        
+        
+        def update_image():
+            try:
+                # Carica l'immagine originale ogni volta
+                pil_img = Image.open("img1.jpeg").resize((500, 500))
 
-        image1 = customtkinter.CTkImage(light_image=open_image, dark_image=open_image, size=(300, 300))
-        image1_label = customtkinter.CTkLabel(images_tab, image = image1)
-        image1_label.grid(row=0, column=0,  padx=20, pady=10, sticky="ew")
+                # Applica una rotazione incrementale
+                self.rotation_angle = (self.rotation_angle + 90) % 360
+                pil_img = pil_img.rotate(self.rotation_angle)
+                #self.image1.configure(image = pil_image)
+                # Aggiorna l'immagine nella GUI
+                updated_image = customtkinter.CTkImage(light_image=pil_img, dark_image=pil_img, size=(500, 500))
+                
+                self.image1_label.configure(image=updated_image)
+                self.image1_label.image = updated_image # previene che venga cancellata
+            except Exception as e:
+                print("Errore durante aggiornamento immagine:", e)
+
+            self.after(1000, update_image)# richiama la funzione ogni 1s
+
+        update_image()  # avvia il loop
+
+        
         # ---- KPI PAGE ----
         kpi_tabs = customtkinter.CTkTabview(self)
         #kpi_tabs = customtkinter.CTkTabview(kpi_frame)

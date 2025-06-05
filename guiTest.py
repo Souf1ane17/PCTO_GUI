@@ -5,8 +5,12 @@ import cv2
 from PIL import ImageOps  
 
 customtkinter.set_appearance_mode("System")
-customtkinter.set_default_color_theme("blue")
+customtkinter.set_default_color_theme("custom.json")
 
+# Colori che si adattano a tema chiaro/scuro
+FG_LIGHT = "#F0F0F0"
+FG_DARK = "#222222"
+BTN_DARK = "#333333"
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -17,42 +21,116 @@ class App(customtkinter.CTk):
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
-        # Sidebar
-        self.sidebar_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
+        self.zoom_factor = 1.0 # Inizializzo il fattore di zoom
+
+        # ------ SIDEBAR ------
+
+        self.sidebar_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0, fg_color=(FG_LIGHT, FG_DARK))
         self.sidebar_frame.grid(row=0, column=0, sticky="nsew")
         self.sidebar_frame.grid_rowconfigure(10, weight=1)
 
+        
+
         self.logo_label = customtkinter.CTkLabel(
-            self.sidebar_frame, text="Sidebar", font=customtkinter.CTkFont(size=20, weight="bold")
+            self.sidebar_frame, text="SIDEBAR", font=customtkinter.CTkFont(size=20, weight="bold")
         )
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
 
-        self.sidebar_buttons = [
-            ("home", lambda: self.show_page("home")),
-            ("settings", lambda: self.show_page("settings")),
-            ("pipeline", lambda: self.show_page("pipeline")),
-            ("production", lambda: self.show_page("production")),
-            ("results", lambda: self.show_page("results")),
-            ("kpi", lambda: self.show_page("kpi")),
-            ("anomalies", lambda: self.show_page("anomalies")),
-            ("guide", lambda: self.show_page("guide")),
-        ]
+        # ------ TASTI SIDEBAR CON IMMAGINE --------
 
-        for index, (text, command) in enumerate(self.sidebar_buttons, start=1):
-            button = customtkinter.CTkButton(self.sidebar_frame, text=text, command=command)
-            button.grid(row=index, column=0, padx=20, pady=10, sticky="ew")
+        home_image = customtkinter.CTkImage(
+            light_image=Image.open("img_home.png"),
+            dark_image=Image.open("img_home.png"),
+            size=(20, 20)
+        )   
+        self.home_button = customtkinter.CTkButton(self.sidebar_frame,text="Home",image=home_image,compound="left",command=lambda: self.show_page("home"),fg_color = "transparent",corner_radius=0, height=40, border_spacing=10,hover_color=("gray70", "gray30"),anchor="w")
+        self.home_button.grid(row=1, column=0, padx=20, pady=10, sticky="")
+
+
+        settings_image = customtkinter.CTkImage(
+            light_image=Image.open("setttings.png"),
+            dark_image=Image.open("setttings.png"),
+            size=(20, 20)
+        ) 
+        
+        self.settings_button = customtkinter.CTkButton(self.sidebar_frame, text="Settings", image = settings_image, command=lambda: self.show_page("settings"), fg_color = "transparent",corner_radius=0, height=40, border_spacing=10,hover_color=("gray70", "gray30"),anchor="w")
+        self.settings_button.grid(row=2, column=0, padx=20, pady=10, sticky="")
+
+        pipeline_image = customtkinter.CTkImage(
+            light_image=Image.open("pipeline.png"),
+            dark_image=Image.open("pipeline.png"),
+            size=(20, 20)
+        ) 
+
+
+        self.pipeline_button = customtkinter.CTkButton(self.sidebar_frame, text="Pipeline", image = pipeline_image, command=lambda: self.show_page("pipeline"), fg_color = "transparent",corner_radius=0, height=40, border_spacing=10,hover_color=("gray70", "gray30"),anchor="w")
+        self.pipeline_button.grid(row=3, column=0, padx=20, pady=10, sticky="")
+
+
+        production_image = customtkinter.CTkImage(
+            light_image=Image.open("production.png"),
+            dark_image=Image.open("production.png"),
+            size=(20, 20)
+        ) 
+
+
+        self.production_button = customtkinter.CTkButton(self.sidebar_frame, text="Production",image = production_image, command=lambda: self.show_page("production"), fg_color = "transparent",corner_radius=0, height=40, border_spacing=10,hover_color=("gray70", "gray30"),anchor="w")
+        self.production_button.grid(row=4, column=0, padx=20, pady=10, sticky="")
+
+        results_image = customtkinter.CTkImage(
+            light_image=Image.open("results.png"),
+            dark_image=Image.open("results.png"),
+            size=(20, 20)
+        ) 
+
+        self.results_button = customtkinter.CTkButton(self.sidebar_frame, text="Results",image = results_image, command=lambda: self.show_page("results"), fg_color = "transparent",corner_radius=0, height=40, border_spacing=10,hover_color=("gray70", "gray30"),anchor="w")
+        self.results_button.grid(row=5, column=0, padx=20, pady=10, sticky="")
+
+        kpi_image = customtkinter.CTkImage(
+            light_image=Image.open("kpi.png"),
+            dark_image=Image.open("kpi.png"),
+            size=(20, 20)
+        ) 
+
+        self.kpi_button = customtkinter.CTkButton(self.sidebar_frame, text="KPI", image = kpi_image,command=lambda: self.show_page("kpi"), fg_color = "transparent",corner_radius=0, height=40, border_spacing=10,hover_color=("gray70", "gray30"),anchor="w")
+        self.kpi_button.grid(row=6, column=0, padx=20, pady=10, sticky="")
+
+        anomalies_image = customtkinter.CTkImage(
+            light_image=Image.open("anomalies.png"),
+            dark_image=Image.open("anomalies.png"),
+            size=(20, 20)
+        ) 
+
+        self.anomalies_button = customtkinter.CTkButton(self.sidebar_frame, text="Anomalies", image = anomalies_image, command=lambda: self.show_page("anomalies"), fg_color = "transparent",corner_radius=0, height=40, border_spacing=10,hover_color=("gray70", "gray30"),anchor="w")
+        self.anomalies_button.grid(row=7, column=0, padx=20, pady=10, sticky="")
+
+        guide_image = customtkinter.CTkImage(
+            light_image=Image.open("guide.png"),
+            dark_image=Image.open("guide.png"),
+            size=(20, 20)
+        ) 
+
+        self.guide_button = customtkinter.CTkButton(self.sidebar_frame, text="Guide",image = guide_image, command=lambda: self.show_page("guide"), fg_color = "transparent",corner_radius=0, height=40, border_spacing=10,hover_color=("gray70", "gray30"),anchor="w")
+        self.guide_button.grid(row=8, column=0, padx=20, pady=10, sticky="")
+        
 
         self.pages = {}
 
-        # ---- Home Page ----
-        home_tabs = customtkinter.CTkTabview(self)
-        #home_tabs = customtkinter.CTkTabview(home_tabs)
-        #home_tabs.pack(fill="both", expand=True, padx=20, pady=20)
+        self.update_button_text_colors()
+
+
+        # ---- HOME PAGE  ----
+
+        home_tabs = customtkinter.CTkTabview(self, fg_color = "transparent")
 
         def add_buttons(tab, labels, spacing=0.07):
             for i, label in enumerate(labels):
-                b = customtkinter.CTkButton(tab, text=label)
-                b.place(relx=0.5, rely=0.3 + i * spacing, anchor="center")
+                b = customtkinter.CTkButton(tab, text=label, corner_radius=40, height=40, border_spacing=15,hover_color=("gray70", "gray30"), fg_color = BTN_DARK)
+                # set columnconfigure to weight 1 for all columns to allow centering
+                tab.grid_columnconfigure(0, weight=1)
+                tab.grid_columnconfigure(2, weight=1)
+                # place button in central column and sticky 'ew' to expand horizontally
+                b.grid(row=i, column=1, padx=20, pady=10, sticky="ew")
 
         home_tabs.add("pipeline")
         add_buttons(home_tabs.tab("pipeline"), ["start", "restart", "stop"])
@@ -71,16 +149,20 @@ class App(customtkinter.CTk):
         self.pages["home"] = home_tabs
 
         # ---- SETTINGS PAGE ----
-        settings_tabs = customtkinter.CTkTabview(self)
-        #settings_tabs = customtkinter.CTkTabview(settings_frame)
-        #settings_tabs.pack(fill="both", expand=True, padx=20, pady=20)
+
+        settings_tabs = customtkinter.CTkTabview(self, fg_color = "transparent")
         settings_tabs.add("Zoom")
         settings_tabs.add("Theme")
 
+        # ----- ZOOM WIDGET ------
+
         zoom_tab = settings_tabs.tab("Zoom")
-        customtkinter.CTkButton(zoom_tab, text="Zoom In", command=self.zoom_in).pack(pady=10)
-        customtkinter.CTkButton(zoom_tab, text="Zoom Out", command=self.zoom_out).pack(pady=10)
-        customtkinter.CTkButton(zoom_tab, text="Reset Zoom", command=self.reset_zoom).pack(pady=10)
+        zoom_tab.grid_columnconfigure(0, weight=1)
+        customtkinter.CTkButton(zoom_tab, text="Zoom In", command=self.zoom_in, corner_radius=40, height=40,hover_color=("gray70", "gray30"), fg_color = BTN_DARK).grid(row=0, column=0, padx=20, pady=10, sticky="")
+        customtkinter.CTkButton(zoom_tab, text="Zoom Out", command=self.zoom_out, corner_radius=40, height=40,hover_color=("gray70", "gray30"), fg_color = BTN_DARK).grid(row=1, column=0, padx=20, pady=10, sticky="")
+        customtkinter.CTkButton(zoom_tab, text="Reset Zoom", command=self.reset_zoom, corner_radius=40, height=40, hover_color=("gray70", "gray30"), fg_color = BTN_DARK).grid(row=2, column=0, padx=20, pady=10, sticky="")
+        
+        # ----- THEME WIDGET ------
 
         theme_tab = settings_tabs.tab("Theme")
         self.theme = customtkinter.CTkComboBox(theme_tab, values=["System", "Dark", "Light"], command = self.set_theme)
@@ -90,41 +172,43 @@ class App(customtkinter.CTk):
 
 
         # ---- PIPELINE PAGE ----
-        pipeline_tabs = customtkinter.CTkTabview(self)
-        #pipeline_tabs = customtkinter.CTkTabview(pipeline_frame)
-        #pipeline_tabs.pack(fill="both", expand=True, padx=20, pady=20)
-        pipeline_tabs.add("Load Config")
-        # ------ TEXTBOX PIPELINE PAGE -----
-        load_config_tab = pipeline_tabs.tab("Load Config")
-        self.config_textbox = customtkinter.CTkTextbox(load_config_tab, width=600, height=30)
-        self.config_textbox.grid(row=0, column=0,  padx=20, pady=10, sticky="ew")
 
-        load_button = customtkinter.CTkButton(load_config_tab, text="Load", command=self.load_config)
-        load_button.grid(row=0, column=1,  padx=20, pady=10, sticky="ew")
+        pipeline_tabs = customtkinter.CTkTabview(self, fg_color = "transparent")
+        pipeline_tabs.add("Load Config")
+
+        # ------ TEXTBOX PIPELINE PAGE -----
+
+        load_config_tab = pipeline_tabs.tab("Load Config")
+        load_config_tab.grid_columnconfigure(0, weight=1)
+        load_config_tab.grid_columnconfigure(1, weight=0)
+        self.config_textbox = customtkinter.CTkTextbox(load_config_tab, width=600, height=20, corner_radius=30, fg_color = BTN_DARK)
+        self.config_textbox.grid(row=0, column=0,  padx=20, pady=10, sticky="")
+
+        load_button = customtkinter.CTkButton(load_config_tab, text="Load", command=self.load_config, corner_radius=40, height=40, border_spacing=15,hover_color=("gray70", "gray30"), fg_color = BTN_DARK)
+        load_button.grid(row=0, column=1, columnspan=2, padx=20, pady=10, sticky="")
 
         self.pages["pipeline"] = pipeline_tabs
 
         # ---- PRODUCTION PAGE ----
-        production_tabs = customtkinter.CTkTabview(self)
-        #production_tabs = customtkinter.CTkTabview(production_frame)
-        #production_tabs.pack(fill="both", expand=True, padx=20, pady=20)
+
+        production_tabs = customtkinter.CTkTabview(self, fg_color = "transparent")
         production_tabs.add("production")
         self.pages["production"] = production_tabs
 
         # ---- RESULTS PAGE ----
-        results_tabs = customtkinter.CTkTabview(self)
-        #results_tabs = customtkinter.CTkTabview(results_frame)
-        #results_tabs.pack(fill="both", expand=True, padx=20, pady=20)
+
+        results_tabs = customtkinter.CTkTabview(self, fg_color = "transparent")
         results_tabs.add("Images")
         images_tab = results_tabs.tab("Images")
         results_tabs.add("Timings")
         timings_tab = results_tabs.tab("Timings")
 
         # ------ TEXTBOX RESULTS PAGE -------
+
         time_label = customtkinter.CTkLabel(timings_tab, text="the time is:")
         time_label.grid(row=0, column=0,  padx=20, pady=10, sticky="ew")
 
-        time_textbox = customtkinter.CTkTextbox(timings_tab, height=30, width=200)
+        time_textbox = customtkinter.CTkTextbox(timings_tab, height=25, width=175, corner_radius=20, fg_color = BTN_DARK)
         time_textbox.insert("0.0", "")
         time_textbox.configure(state="disabled")
         time_textbox.grid(row=0, column=1,  padx=20, pady=10, sticky="ew")
@@ -151,12 +235,10 @@ class App(customtkinter.CTk):
                 # Applica una rotazione incrementale
                 self.rotation_angle = (self.rotation_angle + 90) % 360
                 pil_img = pil_img.rotate(self.rotation_angle)
-                #self.image1.configure(image = pil_image)
-                # Aggiorna l'immagine nella GUI
                 updated_image = customtkinter.CTkImage(light_image=pil_img, dark_image=pil_img, size=(500, 500))
                 
                 self.image1_label.configure(image=updated_image)
-                self.image1_label.image = updated_image # previene che venga cancellata
+                self.image1_label.image = updated_image 
             except Exception as e:
                 print("Errore durante aggiornamento immagine:", e)
 
@@ -166,9 +248,8 @@ class App(customtkinter.CTk):
 
         
         # ---- KPI PAGE ----
-        kpi_tabs = customtkinter.CTkTabview(self)
-        #kpi_tabs = customtkinter.CTkTabview(kpi_frame)
-        #kpi_tabs.pack(fill="both", expand=True, padx=20, pady=20)
+
+        kpi_tabs = customtkinter.CTkTabview(self, fg_color = "transparent")
 
         kpi_tabs.add("picking counter")
         kpi_tabs.add("collision counter")
@@ -180,15 +261,15 @@ class App(customtkinter.CTk):
         picking_counter_tab = kpi_tabs.tab("picking counter")
         picking_counter_label = customtkinter.CTkLabel(picking_counter_tab, text="the picking counter is:")
         picking_counter_label.grid(row=0, column=0,  padx=20, pady=10, sticky="ew")
-        picking_counter_textbox = customtkinter.CTkTextbox(picking_counter_tab, height=30, width=200)
+        picking_counter_textbox = customtkinter.CTkTextbox(picking_counter_tab, height=30, width=200,corner_radius=20, fg_color = BTN_DARK)
         picking_counter_textbox.insert("0.0", "")
         picking_counter_textbox.configure(state="disabled")
         picking_counter_textbox.grid(row=0, column=1,  padx=20, pady=10, sticky="ew")
 
         collision_counter_tab = kpi_tabs.tab("collision counter")
         collision_counter_label = customtkinter.CTkLabel(collision_counter_tab, text="the collision counter is:")
-        collision_counter_label.grid(row=0, column=0,  padx=20, pady=10, sticky="ew")
-        collision_counter_textbox = customtkinter.CTkTextbox(collision_counter_tab, height=30, width=200)
+        collision_counter_label.grid(row=0, column=0, padx=20, pady=10, sticky="ew")
+        collision_counter_textbox = customtkinter.CTkTextbox(collision_counter_tab, height=30, width=200,corner_radius=20, fg_color = BTN_DARK)
         collision_counter_textbox.insert("0.0", "")
         collision_counter_textbox.configure(state="disabled")
         collision_counter_textbox.grid(row=0, column=1,  padx=20, pady=10, sticky="ew")
@@ -196,51 +277,49 @@ class App(customtkinter.CTk):
         cycle_counter_tab = kpi_tabs.tab("cycle counter")
         cycle_counter_label = customtkinter.CTkLabel(cycle_counter_tab, text="the cycle counter is:")
         cycle_counter_label.grid(row=0, column=0,  padx=20, pady=10, sticky="ew")
-        cycle_counter_textbox = customtkinter.CTkTextbox(cycle_counter_tab, height=30, width=200)
+        cycle_counter_textbox = customtkinter.CTkTextbox(cycle_counter_tab, height=30, width=200,corner_radius=20, fg_color = BTN_DARK)
         cycle_counter_textbox.insert("0.0", "")
         cycle_counter_textbox.configure(state="disabled")
         cycle_counter_textbox.grid(row=0, column=1,  padx=20, pady=10, sticky="ew")
 
         picking_rate_tab = kpi_tabs.tab("picking rate")
         picking_rate_label = customtkinter.CTkLabel(picking_rate_tab, text="the picking rate is:")
-        picking_rate_label.grid(row=0, column=0,  padx=20, pady=10, sticky="ew")
-        picking_rate_textbox = customtkinter.CTkTextbox(picking_rate_tab, height=30, width=200)
+        picking_rate_label.grid(row=0, column=0, padx=20, pady=10, sticky="ew")
+        picking_rate_textbox = customtkinter.CTkTextbox(picking_rate_tab, height=30, width=200,corner_radius=20, fg_color = BTN_DARK)
         picking_rate_textbox.insert("0.0", "")
         picking_rate_textbox.configure(state="disabled")
         picking_rate_textbox.grid(row=0, column=1,  padx=20, pady=10, sticky="ew")
 
         collision_rate_tab = kpi_tabs.tab("collision rate")
         collision_rate_label = customtkinter.CTkLabel(collision_rate_tab, text="the collision rate is:")
-        collision_rate_label.grid(row=0, column=0,  padx=20, pady=10, sticky="ew")
-        collision_rate_textbox = customtkinter.CTkTextbox(collision_rate_tab, height=30, width=200)
+        collision_rate_label.grid(row=0, column=0, padx=20, pady=10, sticky="ew")
+        collision_rate_textbox = customtkinter.CTkTextbox(collision_rate_tab, height=30, width=200,corner_radius=20, fg_color = BTN_DARK)
         collision_rate_textbox.insert("0.0", "")
         collision_rate_textbox.configure(state="disabled")
         collision_rate_textbox.grid(row=0, column=1,  padx=20, pady=10, sticky="ew")
 
         self.pages["kpi"] = kpi_tabs
 
-        # ---- Anomalies Page ----
-        anomalies_tabs = customtkinter.CTkTabview(self)
-        #anomalies_tabs = customtkinter.CTkTabview(anomalies_frame)
-        #anomalies_tabs.pack(fill="both", expand=True, padx=20, pady=20)
+        # ---- ANOMALIES PAGE ----
+        anomalies_tabs = customtkinter.CTkTabview(self, fg_color = "transparent")
         anomalies_tabs.add("collision")
         anomalies_tabs.add("failed picking")
         self.pages["anomalies"] = anomalies_tabs
 
-        # ---- Guide Page ----
-        guide_tabs = customtkinter.CTkTabview(self)
-        #guide_tabs = customtkinter.CTkTabview(guide_frame)
-        #guide_tabs.pack(fill="both", expand=True, padx=20, pady=20)
+        # ---- GUIDE PAGE ----
+        guide_tabs = customtkinter.CTkTabview(self, fg_color = "transparent")
         guide_tabs.add("Guide")
         self.pages["guide"] = guide_tabs
 
         guide_tab = guide_tabs.tab("Guide")
 
         # ----- SCROLLBAR ------ 
-        scrollable_guide_frame = customtkinter.CTkScrollableFrame(guide_tab)
+
+        scrollable_guide_frame = customtkinter.CTkScrollableFrame(guide_tab, fg_color=(FG_LIGHT, FG_DARK))
         scrollable_guide_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
         #   ----- RADIO BUTTON ------
+
         self.radio_var = customtkinter.StringVar(value="Option 1")
 
         radio_label = customtkinter.CTkLabel(scrollable_guide_frame, text="Select an option:")
@@ -258,17 +337,19 @@ class App(customtkinter.CTk):
         def print_selected_option():
             print("Selected:", self.radio_var.get())
 
-        print_button = customtkinter.CTkButton(scrollable_guide_frame, text="Print Selection", command=print_selected_option)
+        print_button = customtkinter.CTkButton(scrollable_guide_frame, text="Print Selection", command=print_selected_option, corner_radius=20, height=40, border_spacing=15,hover_color=("gray70", "gray30"), fg_color = BTN_DARK)
         print_button.grid(row=5, column=0, padx=20, pady=10, sticky="ew")
         self.current_page = None
 
         #  ------ SLIDER BAR ------
+
         slider_bar_label = customtkinter.CTkLabel(scrollable_guide_frame, text="ZOOM")
         slider_bar_label.grid(row=6, column=0, padx=20, pady=10, sticky="ew")
         slider_bar = customtkinter.CTkSlider(scrollable_guide_frame)
         slider_bar.grid(row=7, column=0, padx=20, pady=10, sticky="ew")
 
         #  ------ CHECK BOX ------
+
         checkBox_label = customtkinter.CTkLabel(scrollable_guide_frame, text="CHECK BOX")
         checkBox_label.grid(row=8, column=0, padx=20, pady=10, sticky="ew")
         checkBox1 = customtkinter.CTkCheckBox(scrollable_guide_frame, text = "OPTION 1")
@@ -279,24 +360,28 @@ class App(customtkinter.CTk):
         checkBox3.grid(row=11, column=0, padx=20, pady=10, sticky="ew")
 
         # ------- SEGMENTED BUTTON --------
+
         seg_button_label = customtkinter.CTkLabel(scrollable_guide_frame, text = "SEGMENTED BUTTON")
         seg_button_label.grid(row=12, column=0, padx=20, pady=10, sticky="ew")
         seg_button = customtkinter.CTkSegmentedButton(scrollable_guide_frame, values = ["VALUE 1", "VALUE 2", "VALUE 3"])
         seg_button.grid(row=13, column=0, padx=20, pady=10, sticky="ew")
         
         # ----- PROGRESSBAR -----
+
         progress_bar_label = customtkinter.CTkLabel(scrollable_guide_frame, text = "PROGRESSBAR")
         progress_bar_label.grid(row=14, column=0, padx=20, pady=10, sticky="ew")
         progress_bar = customtkinter.CTkProgressBar(scrollable_guide_frame)
         progress_bar.grid(row=15, column=0, padx=20, pady=10, sticky="ew")
 
         # ------ TEXTBOX -------
+
         textbox_label = customtkinter.CTkLabel(scrollable_guide_frame, text = "TEXTBOX")
         textbox_label.grid(row=16, column=0, padx=20, pady=10, sticky="ew")
-        guide_textbox = customtkinter.CTkTextbox(scrollable_guide_frame, width = 300)
+        guide_textbox = customtkinter.CTkTextbox(scrollable_guide_frame, width = 300, fg_color=BTN_DARK)
         guide_textbox.grid(row=17, column=0, padx=20, pady=10, sticky="nsew")
 
         # ------ SWITCH ------
+
         switch_frame = customtkinter.CTkFrame(scrollable_guide_frame, fg_color = "#7f7f7f" )
         switch_frame.grid(row=0, column=0, padx=20, pady=10, sticky="nsew")
         
@@ -309,9 +394,7 @@ class App(customtkinter.CTk):
 
 
 
-
-    def switch_event():
-        print("Switch toggled:", switch_var.get())
+    #
 
     def show_page(self, page_name):
         if self.current_page:
@@ -321,21 +404,62 @@ class App(customtkinter.CTk):
             page.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
             self.current_page = page
 
+    
+
+    # --- FUNZIONI ZOOM ---
+
     def zoom_in(self):
-        print("Zoom In")
+        # Aumenta il fattore di zoom di 10%, massimo 2.0 (200%)
+        self.zoom_factor = min(self.zoom_factor + 0.1, 2.0)
+        customtkinter.set_widget_scaling(self.zoom_factor)
+        customtkinter.set_window_scaling(self.zoom_factor)
+        print(f"Zoom In: fattore attuale = {self.zoom_factor:.2f}")
 
     def zoom_out(self):
-        print("Zoom Out")
+        # Diminuisce il fattore di zoom di 10%, minimo 0.7 (70%)
+        self.zoom_factor = max(self.zoom_factor - 0.1, 0.7)
+        customtkinter.set_widget_scaling(self.zoom_factor)
+        customtkinter.set_window_scaling(self.zoom_factor)
+        print(f"Zoom Out: fattore attuale = {self.zoom_factor:.2f}")
 
     def reset_zoom(self):
-        print("Reset Zoom")
+        # Torna al valore di default (1.0 = 100%)
+        self.zoom_factor = 1.0
+        customtkinter.set_widget_scaling(self.zoom_factor)
+        customtkinter.set_window_scaling(self.zoom_factor)
+        print("Reset Zoom (fattore = 1.0)")
+
+    
 
     def load_config(self):
         content = self.config_textbox.get("0.0", "end").strip()
         print(f"Loading config:\n{content}")
+
+    # ----- FUNZIONE CHANGE FONT -------
+    
+    def update_button_text_colors(self):
+            mode = customtkinter.get_appearance_mode()
+            if mode == "Dark":
+                text_color = "white"
+            else:
+                text_color = "black"
+            buttons = [
+                self.home_button,
+                self.settings_button,
+                self.pipeline_button,
+                self.production_button,
+                self.results_button,
+                self.kpi_button,
+                self.anomalies_button,
+                self.guide_button
+            ]
+            for btn in buttons:
+                btn.configure(text_color=text_color)
+
     
     def set_theme(self, new_theme):
             customtkinter.set_appearance_mode(new_theme)
+            self.update_button_text_colors()
 
 
 if __name__ == "__main__":
